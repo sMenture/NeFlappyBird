@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour
 
     private Vector2 _moveDirection = Vector2.left;
 
-    public event Action<Enemy> OnEnemyDied;
+    public event Action<Enemy> Die;
 
     public CharacterAttacker Attack { get; private set; }
 
@@ -56,10 +56,10 @@ public class Enemy : MonoBehaviour
         if (_health.IsAlive)
             return;
 
-        OnEnemyDied?.Invoke(this);
+        Die?.Invoke(this);
     }
     private void LifeEnd()
     {
-        OnEnemyDied?.Invoke(this);
+        Die?.Invoke(this);
     }
 }

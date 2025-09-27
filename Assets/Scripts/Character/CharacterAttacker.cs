@@ -10,7 +10,6 @@ public class CharacterAttacker : MonoBehaviour
     [SerializeField, Range(0.1f, 10)] private float _delayBetweenShots = 1;
     [SerializeField] private Vector3 _bulletOffset;
 
-    private List<Bullet> _bullets = new List<Bullet>();
     private float _currentTime;
     private Quaternion _basicRotation;
 
@@ -48,8 +47,6 @@ public class CharacterAttacker : MonoBehaviour
         Bullet bullet = _bulletPool.GiveElement();
         bullet.IsHit += ReturnBulletToPool;
         bullet.SetOwner(gameObject);
-
-        _bullets.Add(bullet);
 
         bullet.transform.position = transform.TransformPoint(_bulletOffset + Vector3.forward);
         bullet.transform.rotation = _basicRotation;    

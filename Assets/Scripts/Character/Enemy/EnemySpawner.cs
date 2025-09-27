@@ -50,7 +50,7 @@ public class EnemySpawner : MonoBehaviour
 
             Enemy enemy = _enemyPool.GiveElement();
             enemy.Attack.Initialize(_bulletPool);
-            enemy.OnEnemyDied += DieEnemy;
+            enemy.Die += OnEnemyDied;
 
             _enemies.Add(enemy);
 
@@ -76,9 +76,9 @@ public class EnemySpawner : MonoBehaviour
         return _targetPoints[randomIndex].position;
     }
 
-    private void DieEnemy(Enemy enemy)
+    private void OnEnemyDied(Enemy enemy)
     {
-        enemy.OnEnemyDied -= DieEnemy;
+        enemy.Die -= OnEnemyDied;
 
         _enemyPool.ReturnToPool(enemy);
     }
@@ -86,7 +86,6 @@ public class EnemySpawner : MonoBehaviour
     public void Reset()
     {
         _timeHasPassed = 0;
-        _currentTime = 0;
         _selectedIndexSpawnPoint.Clear();
         _enemies.Clear();
     }
