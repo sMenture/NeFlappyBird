@@ -1,6 +1,5 @@
-using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -15,36 +14,43 @@ public class EnemySpawner : MonoBehaviour
 
     private int _minSpawnEnemy = 2;
     private float _timeHasPassed = 0;
-    private float _currentTime = 0;
     private List<int> _selectedIndexSpawnPoint = new List<int>();
     private List<Enemy> _enemies = new List<Enemy>();
+    private Coroutine _coroutine;
+
+    private void OnEnable()
+    {
+        _coroutine = StartCoroutine(SpawnNewWaves());
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(_coroutine);
+    }
 
 
     private void Update()
     {
         _timeHasPassed += Time.deltaTime;
-        _currentTime -= Time.deltaTime;
-
-        if (0 > _currentTime)
-            SpawnNewWaves();
     }
 
-    private void SpawnNewWaves()
+    private IEnumerator SpawnNewWaves()
     {
+        yield return _timeBetweenWaves;
+
         _selectedIndexSpawnPoint.Clear();
-        _currentTime = _timeBetweenWaves;
 
         int enemiesPerWave = (int)Mathf.Clamp(_timeHasPassed / _enemiesPerWave, _minSpawnEnemy, _targetPoints.Length);
         Debug.Log(enemiesPerWave);
 
         for (int i = 0; i < enemiesPerWave; i++)
         {
-            if (_enemyPool.CanReturnDequeueElememt == false)
-                return;
+            if (_enemyPool.HasElements == false)
+                yield return null;
 
             Enemy enemy = _enemyPool.GiveElement();
-            enemy.Attack.SetBulletPool(_bulletPool);
-            enemy.Die += DieEnemy;
+            enemy.Attack.Initialize(_bulletPool);
+            enemy.OnEnemyDied += DieEnemy;
 
             _enemies.Add(enemy);
 
@@ -72,19 +78,13 @@ public class EnemySpawner : MonoBehaviour
 
     private void DieEnemy(Enemy enemy)
     {
-        enemy.Die -= DieEnemy;
+        enemy.OnEnemyDied -= DieEnemy;
 
         _enemyPool.ReturnToPool(enemy);
     }
 
     public void Reset()
     {
-        foreach (var enemy in _enemies)
-        {
-            enemy.Attack.Reset();
-            _enemyPool.ReturnToPool(enemy);
-        }
-
         _timeHasPassed = 0;
         _currentTime = 0;
         _selectedIndexSpawnPoint.Clear();

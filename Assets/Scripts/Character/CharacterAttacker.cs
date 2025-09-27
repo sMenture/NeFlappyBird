@@ -27,7 +27,7 @@ public class CharacterAttacker : MonoBehaviour
             Shot();
     }
 
-    public void SetBulletPool(BulletPool objectPool)
+    public void Initialize(BulletPool objectPool)
     {
         _bulletPool = objectPool;
     }
@@ -39,7 +39,7 @@ public class CharacterAttacker : MonoBehaviour
         if (_bulletPool == null)
             return;
 
-        if (_bulletPool.CanReturnDequeueElememt == false)
+        if (_bulletPool.HasElements == false)
             return;
 
         if (_audioShot != null)

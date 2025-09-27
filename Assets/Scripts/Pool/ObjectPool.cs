@@ -8,13 +8,14 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
     [SerializeField] private int _spawnCount = 50;
 
     private Queue<T> _pooledObjects = new Queue<T>();
-
-    public int SpawnCount => _spawnCount;
-    public int PoolCount => _pooledObjects.Count;
-    public bool CanReturnDequeueElememt => _pooledObjects.Count > 0;
+    private List<T> _elementsGivenAway = new List<T>();
 
     public event Action AddElement;
     public event Action RemoveElement;
+
+    public int SpawnCount => _spawnCount;
+    public int PoolCount => _pooledObjects.Count;
+    public bool HasElements => _pooledObjects.Count > 0;
 
     private void Awake()
     {
@@ -35,6 +36,8 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
 
         AddElement?.Invoke();
 
+        _elementsGivenAway.Add(firstPoolElement);
+
         return firstPoolElement;
     }
 
@@ -43,6 +46,15 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
         element.gameObject.SetActive(false);
         _pooledObjects.Enqueue(element);
 
+        if(_elementsGivenAway.Contains(element))
+            _elementsGivenAway.Remove(element);
+
         RemoveElement?.Invoke();
+    }
+
+    public void Reset()
+    {
+        foreach (var element in _elementsGivenAway)
+            ReturnToPool(element);
     }
 }

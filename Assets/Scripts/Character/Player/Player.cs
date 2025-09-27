@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
 
     private void OnEnable()
     {
-        _inputReader.AttackDown += _attacker.Attack;
+        _inputReader.AttackPressed += _attacker.Attack;
         _inputReader.InputDirection += _mover.Move;
         _inputReader.InputDirection += _rotation.Rotation;
 
@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
 
     private void OnDisable()
     {
-        _inputReader.AttackDown -= _attacker.Attack;
+        _inputReader.AttackPressed -= _attacker.Attack;
         _inputReader.InputDirection -= _mover.Move;
         _inputReader.InputDirection -= _rotation.Rotation;
 

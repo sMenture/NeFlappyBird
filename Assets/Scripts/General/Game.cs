@@ -9,6 +9,8 @@ public class Game : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private EnemySpawner _enemySpawner;
     [SerializeField] private ScoreCounter _scoreCounter;
+    [SerializeField] private BulletPool _bulletPool;
+    [SerializeField] private EnemyPool _enemyPool;
 
     private void Start()
     {
@@ -38,6 +40,8 @@ public class Game : MonoBehaviour
         Time.timeScale = 1.0f;
         _startButton.gameObject.SetActive(false);
 
+        _enemyPool.Reset();
+        _bulletPool.Reset();
         _enemySpawner.Reset();
         _scoreCounter.Reset();
         _player.Reset();

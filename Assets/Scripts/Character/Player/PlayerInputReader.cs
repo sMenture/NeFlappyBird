@@ -8,7 +8,7 @@ public class PlayerInputReader : MonoBehaviour
     private readonly KeyCode AttackButton = KeyCode.Mouse0;
 
     public event Action<Vector2> InputDirection;
-    public event Action AttackDown;
+    public event Action AttackPressed;
 
     private void Update()
     {
@@ -18,6 +18,6 @@ public class PlayerInputReader : MonoBehaviour
         InputDirection?.Invoke(new Vector2(horizontal, vertical));
 
         if (Input.GetKey(AttackButton))
-            AttackDown?.Invoke();
+            AttackPressed?.Invoke();
     }
 }
